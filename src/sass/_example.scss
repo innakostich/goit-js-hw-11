@@ -1,28 +1,136 @@
-.example {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  line-height: 1.5;
-  background-color: #fff;
-  color: #2f2f37;
-  max-width: 960px;
-  padding: 16px;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.example code {
-  font-family: monospace;
-  font-size: 16px;
-  font-weight: 700;
-  background-color: #ff6b0a;
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.search-form {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.search-form input[type='text'] {
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 18px;
+  border: 2px solid #ddd;
+  border-right: none;
+  border-radius: 5px 0 0 5px;
+}
+
+.search-form button[type='submit'] {
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: 500;
+  border: 2px solid #4caf50;
+  border-left: none;
+  background-color: #4caf50;
   color: #fff;
-  padding: 2px 6px;
-  border-radius: 2px;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
 }
 
-.example .background {
-  height: 240px;
-  // ❗️❗️❗️ The path to images from a SASS file
-  // is always the same as from the css folder.
-  background-image: url('../images/logo.png');
-  background-size: cover;
-  background-position: center;
+.search-form button[type='submit']:hover {
+  background-color: #3e8e41;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-gap: 20px;
+}
+
+.photo-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.photo-card img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.photo-card .info {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #f5f5f5;
+}
+
+.photo-card .info-item {
+  font-size: 16px;
+  color: #333;
+}
+
+.photo-card .info-item b {
+  font-weight: 500;
+  color: #555;
+}
+
+.load-more {
+  display: none;
+  margin: 0 auto;
+  padding: 10px 20px;
+  border: none;
+  background-color: #4caf50;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.notiflix-notification {
+  background-color: #fff;
+  color: #333;
+  font-size: 18px;
+  font-weight: 500;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.notiflix-notification > span {
+  display: block;
+  padding: 20px;
+}
+
+.notiflix-notification.info {
+  background-color: #2196f3;
+  color: #fff;
+}
+
+.notiflix-notification.failure {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.notiflix-notification.success {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.notiflix-lh {
+  font-size: 16px;
+  color: #999;
+  margin-top: 5px;
+}
+
+.notiflix-lh > span {
+  font-weight: 500;
+  color: #555;
 }
