@@ -1,21 +1,28 @@
-const renderGallery = (images, photoCardTemplate) => {
-    return images.map((image) => {
-      const card = photoCardTemplate.cloneNode(true);
-      const img = card.querySelector('.gallery__image');
-      img.src = image.webformatURL;
-      img.alt = image.tags;
-      const likes = card.querySelector('.gallery__likes');
-      likes.textContent = image.likes;
-      const views = card.querySelector('.gallery__views');
-      views.textContent = image.views;
-      const comments = card.querySelector('.gallery__comments');
-      comments.textContent = image.comments;
-      const downloads = card.querySelector('.gallery__downloads');
-      downloads.textContent = image.downloads;
+export { renderGallery };
+
+function renderGallery(images) {
+    const gallery = document.querySelector('.gallery');
   
-      return card;
-    });
-  };
+    function generateMarkup(image) {
+      const { id, largeImageURL, webformatURL, tags, likes, views, comments, downloads } = image;
+      return `
+        <a class="gallery__link" href="${largeImageURL}">
+          <div class="gallery-item" id="${id}">
+            <img class="gallery-item__img" src="${webformatURL}" alt="${tags}" loading="lazy" />
+            <div class="info">
+              <p class="info-item"><b>Likes</b>${likes}</p>
+              <p class="info-item"><b>Views</b>${views}</p>
+              <p class="info-item"><b>Comments</b>${comments}</p>
+              <p class="info-item"><b>Downloads</b>${downloads}</p>
+            </div>
+          </div>
+        </a>
+      `;
+    }
   
-  export { renderGallery };
+    const markup = images.map(generateMarkup).join('');
+    gallery.insertAdjacentHTML('beforeend', markup);
+  }
+  
+ 
   

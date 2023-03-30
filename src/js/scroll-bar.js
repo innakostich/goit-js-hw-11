@@ -1,25 +1,26 @@
-const onScroll = (callback, container) => {
-    window.addEventListener('scroll', () => {
-      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-      if (scrollTop + clientHeight >= scrollHeight - 5) {
-        callback(container);
-      }
-    });
-  };
+export { onScroll, onToTopBtn };
+
+const toTopBtn = document.querySelector('.btn-to-top');
+
+window.addEventListener('scroll', onScroll);
+toTopBtn.addEventListener('click', onToTopBtn);
+
+function onScroll() {
+  const scrolled = window.pageYOffset;
+  const coords = document.documentElement.clientHeight;
+
+  if (scrolled > coords) {
+    toTopBtn.classList.add('btn-to-top--visible');
+  }
+  if (scrolled < coords) {
+    toTopBtn.classList.remove('btn-to-top--visible');
+  }
+}
+
+function onToTopBtn() {
+  if (window.pageYOffset > 0) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
   
-  const onToTopBtn = (toTopBtn) => {
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 100) {
-        toTopBtn.classList.add('show');
-      } else {
-        toTopBtn.classList.remove('show');
-      }
-    });
-  
-    toTopBtn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  };
-  
-  export { onScroll, onToTopBtn };
   

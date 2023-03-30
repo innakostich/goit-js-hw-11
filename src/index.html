@@ -16,37 +16,21 @@
   <body>
     <div class="search-container">
       <form class="search-form" id="search-form">
-        <input type="text"
-         name="searchQuery" 
-         autocomplete="off"
-         placeholder="Search images..." />
-
-         <button type="submit">Search</button>
-        </form>
+        <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
+        <button type="submit">
+          <span class="material-icons">search</span>
+        </button>
+      </form>
     </div>
 
-    <div class="photo-card">
-      <!-- <img src="" alt="" loading="lazy" /> -->
-      <div class="info">
-        <p class="info-item">
-          <b>Likes</b>
-          <span class="likes"></span>
-        </p>
-        <p class="info-item">
-          <b>Views</b>
-          <span class="views"></span>
-        </p>
-        <p class="info-item">
-          <b>Comments</b>
-          <span class="comments"></span>
-        </p>
-        <p class="info-item">
-          <b>Downloads</b>
-          <span class="downloads"></span>
-        </p>
-      </div>
+    <div class="gallery-container">
+      <div class="gallery"></div>
+      <button type="button" class="btn-load-more is-hidden">Load more</button>
+      <a class="btn-to-top" title="Return to top">
+        <span class="material-icons">arrow_upward</span></a
+      >
     </div>
 
-    <script src="index.js" type="module"></script>
+    <script src="index.js " type="module"></script>
   </body>
 </html>
