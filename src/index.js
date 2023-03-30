@@ -1,21 +1,19 @@
- import './sass/main.scss';
- import { fetchImages } from './js/fetch-images';
- import { renderGallery } from './js/render-gallery';
- import { onScroll, onToTopBtn } from './js/scroll-bar';
+import './sass/main.scss';
 
- import SimpleLightbox from 'simplelightbox';
-
-import 'simplelightbox/dist/simple-lightbox.min.css';
-
-import axios from 'axios';
+import { fetchImages } from './js/fetch-images';
+import { renderGallery } from './js/render-gallery';
+import { onScroll, onToTopBtn } from './js/scroll-bar';
 import Notiflix from 'notiflix';
 
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 const form = document.querySelector('#search-form');
-const gallery = document.querySelector('.gallery');
+const galleryContainer = document.querySelector('.gallery-container');
+const loadMoreButton = document.querySelector('.load-more-button');
+const toTopButton = document.querySelector('.to-top');
+const photoCardTemplate = document.querySelector('#photo-card-template');
 
-const photoCardTemplate = document.querySelector('#photo-card-template').content;
-
-const loadMoreBtn = document.querySelector('.load-more');
 const API_KEY = '34787029-9060cf1f0b6b2569d575ff8e0';
 const BASE_URL = 'https://pixabay.com/api/';
 const PER_PAGE = 40;
@@ -36,50 +34,25 @@ function buildUrl(query) {
   return `${BASE_URL}?${params.toString()}`;
 }
 
-// Функция для рендеринга карточки изображения
-function renderPhotoCard(photo) {
-  const card = photoCardTemplate.cloneNode(true);
-
-  const img = card.querySelector('img');
-  img.src = photo.webformatURL;
-  img.alt = photo.tags;
-
-  const likes = card.querySelector('.likes');
-  likes.textContent = photo.likes;
-
-  const views = card.querySelector('.views');
-  views.textContent = photo.views;
-
-  const comments = card.querySelector('.comments');
-  comments.textContent = photo.comments;
-
-  const downloads = card.querySelector('.downloads');
-  downloads.textContent = photo.downloads;
-
-  return card;
-}
-
 // Функция для очистки контейнера галереи
 function clearGallery() {
-  gallery.innerHTML = '';
+  galleryContainer.innerHTML = '';
 }
 
 // Функция для загрузки изображений по запросу
 async function loadPhotos(query) {
   try {
     const url = buildUrl(query);
-    const response = await axios.get(url);
+    const { images, totalHits } = await fetchImages(url);
+    const photoCards = renderGallery(images, photoCardTemplate);
 
-    const { hits, totalHits } = response.data;
-    const photos = hits.map((hit) => renderPhotoCard(hit));
-
-    gallery.append(...photos);
+    galleryContainer.append(...photoCards);
 
     // Показываем кнопку "Load more" если есть еще изображения
-    if (gallery.children.length < totalHits) {
-      loadMoreBtn.style.display = 'block';
+    if (galleryContainer.children.length < totalHits) {
+      loadMoreButton.style.display = 'block';
     } else {
-      loadMoreBtn.style.display = 'none';
+      loadMoreButton.style.display = 'none';
     }
 
     // Сохраняем значение текущей страницы
@@ -104,22 +77,41 @@ form.addEventListener('submit', async (event) => {
   currentPage = 1;
 
   clearGallery();
-  loadMoreBtn.style.display = 'none';
+  loadMoreButton.style.display = 'none';
 
   await loadPhotos(query);
 
   // Если ничего не найдено, показываем уведомление
-  if (gallery.children.length === 0) {
+  if (galleryContainer.children.length === 0) {
     Notiflix.Notify.info(
-      'Sorry, there are no images matching your search query. Please try again.',
+      'Sorry, there are no images matching your search query. Please try again.'
     );
   }
 });
 
-
 // Обработчик события для кнопки "Load more"
-loadMoreBtn.addEventListener('click', async () => {
-    const query = form.elements.searchQuery.value.trim();
-    await loadPhotos(query);
-  });
-  
+  loadMoreButton.addEventListener('click', async () => {
+  const query = form.elements.searchQuery.value.trim();
+  await loadPhotos(query);
+});
+
+// Инициализация Notiflix
+Notiflix.Notify.init({
+  width: '280px',
+  fontSize: '16px',
+  timeout: 3000,
+  position: 'right-top',
+});
+
+// Инициализация SimpleLightbox
+const lightbox = new SimpleLightbox('.gallery-container a', {
+  captions: true,
+  captionsData: 'alt',
+});
+
+// Обработчики событий для прокрутки страницы и кнопки "To Top"
+onScroll(() => {
+  const query = form.elements.searchQuery.value.trim();
+  loadPhotos(query);
+});
+onToTopBtn(toTopButton);
