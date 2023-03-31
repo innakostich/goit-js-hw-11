@@ -39,7 +39,7 @@ function onSearchForm(e) {
   fetchImages(query, page, perPage)
     .then(({ data }) => {
       if (data.totalHits === 0) {
-        alertNoImagesFound();
+        displayNoResultsAlert();
       } else {
         renderGallery(data.hits);
         simpleLightBox = new SimpleLightbox('.gallery a').refresh();
@@ -83,7 +83,7 @@ function alertNoEmptySearch() {
   Notiflix.Notify.failure('The search bar cannot be empty. Please type any criteria in the search bar.');
 }
 
-function alertNoImagesFound() {
+function displayNoResultsAlert() {
   Notiflix.Notify.failure(
     'Sorry, there are no images matching your search query. Please try again.',
   );
