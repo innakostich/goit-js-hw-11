@@ -23,7 +23,7 @@ loadMoreBtn.addEventListener('click', onLoadMoreBtn);
 onScroll();
 onToTopBtn();
 
-function onSearchForm(e) {
+async function onSearchForm(e) {
   e.preventDefault();
   window.scrollTo({ top: 0 });
   page = 1;
@@ -36,43 +36,47 @@ function onSearchForm(e) {
     return;
   }
 
-  fetchImages(query, page, perPage)
-    .then(({ data }) => {
-      if (data.totalHits === 0) {
-        displayNoResultsAlert();
-      } else {
-        renderGallery(data.hits);
-        simpleLightBox = new SimpleLightbox('.gallery a').refresh();
-        alertImagesFound(data);
+  try {
+    const { data } = await fetchImages(query, page, perPage);
 
-        if (data.totalHits > perPage) {
-          loadMoreBtn.classList.remove('is-hidden');
-        }
+    if (data.totalHits === 0) {
+      displayNoResultsAlert();
+    } else {
+      renderGallery(data.hits);
+      simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+      alertImagesFound(data);
+
+      if (data.totalHits > perPage) {
+        loadMoreBtn.classList.remove('is-hidden');
       }
-    })
-    .catch(error => console.log(error))
-    .finally(() => {
-      searchForm.reset();
-    });
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    searchForm.reset();
+  }
 }
 
-function onLoadMoreBtn() {
+async function onLoadMoreBtn() {
   page += 1;
   simpleLightBox.destroy();
 
-  fetchImages(query, page, perPage)
-    .then(({ data }) => {
-      renderGallery(data.hits);
-      simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+  try {
+    const { data } = await fetchImages(query, page, perPage);
 
-      const totalPages = Math.ceil(data.totalHits / perPage);
+    renderGallery(data.hits);
+    simpleLightBox = new SimpleLightbox('.gallery a').refresh();
 
-      if (page > totalPages) {
-        loadMoreBtn.classList.add('is-hidden');
-        alertEndOfSearch();
-      }
-    })
-    .catch(error => console.log(error));
+    const totalPages = Math.ceil(data.totalHits / perPage);
+
+    if (page >= totalPages) {
+      loadMoreBtn.classList.add('is-hidden');
+      await delay(500);
+      alertEndOfSearch();
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function alertImagesFound(data) {
@@ -91,4 +95,8 @@ function displayNoResultsAlert() {
 
 function alertEndOfSearch() {
   Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+}
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
